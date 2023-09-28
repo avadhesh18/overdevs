@@ -1,0 +1,215 @@
+<!DOCTYPE html >
+<html lang="en">
+<head>
+  <title>Nailing the MediaSession API on iOS</title>
+  <meta name="description" content="Safari doesn't play well with the MediaSession API. I tried to fix some of it.">
+  <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans@wght:400,700f&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <style>body {
+    margin: 0;
+    padding: 0;
+    font-family: Instrument Sans,sans-serif;
+}
+
+header {
+    text-align: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+main {
+    display: block;
+    max-width: 700px;
+    margin: 0 auto;
+}
+a{color:#069;}
+article {
+    padding: 30px;
+}
+h1,h2,h3,h4{margin:15px 0px; font-weight:700;}
+
+h1 {
+    font-size: 32px;
+  
+}
+
+p.desc {
+    font-size: 22px;
+    color: #777;
+}
+
+p {
+    margin: 15px 0px;
+    line-height: 32px;
+    font-size: 19px;
+}
+
+pre {
+    background: #ddd;
+    overflow-x: scroll;
+    white-space: pre;
+    padding: 15px;
+    font-size: 16px;
+}
+
+h2 {
+    font-size: 26px;
+}
+
+h3 {
+    font-size: 24px;
+}
+
+h4 {
+    font-size: 22px;
+}
+
+ol {
+    margin: 0;
+    padding: 0;
+    list-style-position: inside;
+    font-size: 19px;
+}
+
+ol li {
+    margin: 15px 0px;
+}
+p img {
+    max-width: 100%;
+    display: block;
+    text-align: center;
+}
+</style>
+</head>
+<body>
+  <header>Overdevs.com</header>
+  <main>
+    <article>
+      <h1>Nailing the MediaSession API on iOS</h1>
+      <p class="desc">Safari on iPhone doesn't play well with the MediaSession API, so I tried to fix some of it.</p>
+      <p><img src="ios-media-pwa-player-mediasession.png" alt="Image of iOS media player displaying data through mediasession API in a PWA"></p>
+      <p>When building <a href="https://avadhesh18.github.io/rssTea" title="an RSS reader and Podcast player">rssTea</a> progressive web app, I came across the world of <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaSession">MediaSession APIs</a>. It's an API for providing custom behaviors for standard media playback interactions, which basically means controlling how the media player in the notifications bar of most operating systems will look and work.</p>
+      <h2>The iOS Problem</h2>
+      <p>Setting up the basic media session worked flawlessly on my Mac and Android devices.</p>
+      <pre>
+        caudio = document.getElementById('myAudio');
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: "Audio Title",
+          artist: "Artist Name",
+          album: "rssTea",
+          artwork: [{ src: "artwork.png" }],
+        });
+
+        navigator.mediaSession.setActionHandler("play", () => {
+          caudio.play();
+          navigator.mediaSession.playbackState = "playing";
+        });
+
+        navigator.mediaSession.setActionHandler("pause", () => {
+          caudio.pause();
+          navigator.mediaSession.playbackState = "paused";
+        });
+
+        navigator.mediaSession.setActionHandler("seekto", (details) => {
+          if (details.fastSeek && caudio) {
+            const newTime = details.seekTime || 0;
+            caudio.currentTime = newTime;
+          } else if (caudio) {
+            const currentTime = caudio.currentTime || 0;
+            const seekTime = details.seekTime || 0;
+            caudio.currentTime = currentTime + seekTime;
+          }
+        });
+
+        let skipTime = 30;
+        navigator.mediaSession.setActionHandler("seekbackward", (evt) => {
+          caudio.currentTime = Math.max(caudio.currentTime - skipTime, 0);
+        });
+
+        navigator.mediaSession.setActionHandler("seekforward", (evt) => {
+          caudio.currentTime = Math.min(caudio.currentTime + skipTime, caudio.duration);
+        });
+
+        navigator.mediaSession.setActionHandler(
+          'nexttrack',
+          () => {   handle playing the next track here );    
+          }
+        );
+        navigator.mediaSession.setActionHandler(
+          'previoustrack',
+          () => {  handle playing the previous track here ); 
+          }
+        );
+      </pre>
+      <h3>But iOS...</h3>
+      <p>Well, iOS had its own set of problems. I will list them one by one.</p>
+      <ol>
+        <li>Artwork won't display in the Notification Center.</li>
+        <li>Artwork won't display in the Control Center.</li>
+        <li>Album name will not be displayed anywhere.</li>
+        <li>Next and previous track buttons will not be displayed.</li>
+      </ol>
+    <h3>Fixing the MediaSession on iOS</h3>
+    <h4>Fixing the artwork</h4>
+    <p>As I said before, the default artwork provided by the podcast's RSS feed displayed perfectly on every device except iOS. iOS displayed just a grey placeholder box. So I ran some tests.<br>
+    I used the code provided on MDN web docs as it is to see if size was a problem displaying the artwork on iOS.</p>
+    <pre>
+      if ("mediaSession" in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: "Song title",
+          artist: "Artist's name",
+          album: "Some album",
+          artwork: [
+            {
+              src: "https://dummyimage.com/96x96",
+              sizes: "96x96",
+              type: "image/png",
+            },
+            {
+              src: "https://dummyimage.com/128x128",
+              sizes: "128x128",
+              type: "image/png",
+            },
+            {
+              src: "https://dummyimage.com/192x192",
+              sizes: "192x192",
+              type: "image/png",
+            },
+            {
+              src: "https://dummyimage.com/256x256",
+              sizes: "256x256",
+              type: "image/png",
+            },
+            {
+              src: "https://dummyimage.com/384x384",
+              sizes: "384x384",
+              type: "image/png",
+            },
+            {
+              src: "https://dummyimage.com/512x512",
+              sizes: "512x512",
+              type: "image/png",
+            },
+          ],
+        });
+      }
+    </pre>
+    <p>And it worked.<br> Yes, it did display the 96x96 image in the Notification Center, and unfortunately, the same icon in the Control Center's large preview, which was blurred. So these are the outcomes from my test.</p>
+    <ol>
+      <li>iOS will only display one size everywhere it needs to display the artwork, almost always the first one.</li>
+      <li>The single image that iOS picks will also be displayed in the Control Center preview, albeit blurred.</li>
+      <li>Images larger than 128x128 will not be replaced by a grey translucent box.</li>
+    </ol>
+    <h4>Fixing the Album name</h4>
+    <p>Well, you can't. If you provide a value for <code>artist</code>, the album name will not be shown anywhere on iOS.</p>
+    <h4>Fixing Next and Previous button disappearance</h4>
+    <p>This is not a bug but a feature. If you use <code>setActionHandler</code> to handle <code>seekbackward</code> and <code>seekforward</code>, then the Next and Previous buttons will not be displayed. If you remove these, then your Next and Previous buttons will be back for good.</p>
+    <h4>Conclusion</h4>
+    <p>So I did all these fixes and eventually launched rssTea. You can check the app running <a href="https://avadhesh18.github.io/rssTea">here</a>. I hope iOS fixes all these in the next update to the OS or Safari. Specially the artwork issues because the blurry artwork looks hideous in the Control Centre.</p>
+    <p class="meta">Written by <a href="https://github.com/avadhesh18/">Avadhesh</a></p>
+        </article>
+        
+  </main>
+</body>
+</html>

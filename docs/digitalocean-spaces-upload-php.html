@@ -1,0 +1,349 @@
+<!DOCTYPE html >
+<html lang="en">
+<head>
+  <title>Uploading Content to DigitalOcean Spaces Using PHP</title>
+  <meta name="description" content="Uploading content to Digitalocean Spaces using PHP is simillar to AWS. Here is how to do that.">
+  <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans@wght:400,700f&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <style>body {
+    margin: 0;
+    padding: 0;
+    font-family: Instrument Sans,sans-serif;
+}
+
+header {
+    text-align: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+main {
+    display: block;
+    max-width: 700px;
+    margin: 0 auto;
+}
+a{color:#069;}
+article {
+    padding: 30px;
+}
+h1,h2,h3,h4{margin:15px 0px; font-weight:700;}
+
+h1 {
+    font-size: 32px;
+  
+}
+
+p.desc {
+    font-size: 22px;
+    color: #777;
+}
+
+p {
+    margin: 15px 0px;
+    line-height: 32px;
+    font-size: 19px;
+}
+
+pre {
+    background: #ddd;
+    overflow-x: scroll;
+    white-space: pre;
+    padding: 15px;
+    font-size: 16px;
+}
+
+h2 {
+    font-size: 26px;
+}
+
+h3 {
+    font-size: 24px;
+}
+
+h4 {
+    font-size: 22px;
+}
+
+ol {
+    margin: 0;
+    padding: 0;
+    list-style-position: inside;
+    font-size: 19px;
+}
+
+ol li {
+    margin: 15px 0px;
+}
+p img {
+    max-width: 100%;
+    display: block;
+    text-align: center;
+}
+ul {
+    margin: 0px;
+    padding: 0px;
+    padding-left: 15px;
+}
+</style>
+</head>
+<body>
+  <header>Overdevs.com</header>
+  <main>
+    <article>
+      <h1>Uploading Content to DigitalOcean Spaces Using PHP</h1>
+      <p class="desc">Uploading content to Digitalocean Spaces using PHP is simillar to AWS. Here is how to do that.</p>
+  <p>DigitalOcean Spaces is a cloud storage service that allows users to store and serve large amounts of unstructured data, such as images, videos, and backups. When I tried to use it for the first time I was advised that the uploading process should be simillar to Amazon's AWS. However I ran into some issues when using the AWS code directly. So here is the full code that I use to upload to Spaces. 
+  </p>
+  <h2>Uploading a file to DigitalOcean Spaces</h2>
+  <p>Here is the snippet if you just want to copy and paste. Even though I have commented the code, I will advice to read the article to the end to understand what the code does. </p><pre>
+  &lt;?php
+// Digital Ocean Spaces API keys
+$dosp_access_key_id = YOUR_ACCESS_KEY_ID;
+$dosp_secret_access_key = YOUR_SECRET_ACCESS_KEY;
+
+// Bucket
+$bucket_name = YOUR_BUCKET_NAME;
+
+// When setting up a space you get to select a reigon, use that here)
+$dosp_region = 'nyc3';
+$host_name = $bucket_name . '.nyc3.digitaloceanspaces.com';
+
+// Server path where content is present. This is just an example
+$sp_data = file_get_contents('yourfilepath');
+$content = $sp_data;
+
+// file permissions
+$content_acl = 'public-read';
+
+// MIME type of file. Very important to set if you later plan to load the file from a digialocean space url in the browser (images, for example will be image/png, image/jpeg etc)
+$content_type =  $sp_type;
+// Name of content on S3
+$content_title =  $sp_name;
+
+// Service name for S3
+$dosp_service_name = 's3';
+
+// UTC timestamp and date
+$timestamp = gmdate('Ymd\THis\Z');
+$date = gmdate('Ymd');
+
+// HTTP request headers as key &amp; value
+$request_headers = array();
+$request_headers['Content-Type'] = $content_type;
+$request_headers['x-amz-date'] = $timestamp;
+$request_headers['Host'] = $host_name;
+$request_headers['x-amz-acl'] = $content_acl;
+$request_headers['Cache-Control'] = 'max-age=2592000, public';
+$request_headers['x-amz-content-sha256'] = hash('sha256', $content);
+// Sort it in ascending order
+ksort($request_headers);
+
+// Canonical headers
+$canonical_headers = [];
+foreach($request_headers as $key =&gt; $value) {
+	$canonical_headers[] = strtolower($key) . &quot;:&quot; . $value;
+}
+$canonical_headers = implode(&quot;\n&quot;, $canonical_headers);
+
+// Signed headers
+$signed_headers = [];
+foreach($request_headers as $key =&gt; $value) {
+	$signed_headers[] = strtolower($key);
+}
+$signed_headers = implode(&quot;;&quot;, $signed_headers);
+
+// Cannonical request 
+$canonical_request = [];
+$canonical_request[] = &quot;PUT&quot;;
+$canonical_request[] = &quot;/&quot; . $content_title;
+$canonical_request[] = &quot;&quot;;
+$canonical_request[] = $canonical_headers;
+$canonical_request[] = &quot;&quot;;
+$canonical_request[] = $signed_headers;
+$canonical_request[] = hash('sha256', $content);
+$canonical_request = implode(&quot;\n&quot;, $canonical_request);
+$hashed_canonical_request = hash('sha256', $canonical_request);
+
+// Scope
+$scope = [];
+$scope[] = $date;
+$scope[] = $dosp_region;
+$scope[] = $dosp_service_name;
+$scope[] = &quot;aws4_request&quot;;
+
+// String to sign
+$string_to_sign = [];
+$string_to_sign[] = &quot;AWS4-HMAC-SHA256&quot;; 
+$string_to_sign[] = $timestamp; 
+$string_to_sign[] = implode('/', $scope);
+$string_to_sign[] = $hashed_canonical_request;
+$string_to_sign = implode(&quot;\n&quot;, $string_to_sign);
+
+// Signing key
+$kSecret = 'AWS4' . $dosp_secret_access_key;
+$kDate = hash_hmac('sha256', $date, $kSecret, true);
+$kRegion = hash_hmac('sha256', $dosp_region, $kDate, true);
+$kService = hash_hmac('sha256', $dosp_service_name, $kRegion, true);
+$kSigning = hash_hmac('sha256', 'aws4_request', $kService, true);
+
+// Signature
+$signature = hash_hmac('sha256', $string_to_sign, $kSigning);
+
+// Authorization
+$authorization = [
+	'Credential=' . $dosp_access_key_id . '/' . implode('/', $scope),
+	'SignedHeaders=' . $signed_headers,
+	'Signature=' . $signature
+];
+$authorization = 'AWS4-HMAC-SHA256' . ' ' . implode( ',', $authorization);
+
+// Curl headers
+$curl_headers = [ 'Authorization: ' . $authorization ];
+foreach($request_headers as $key =&gt; $value) {
+	$curl_headers[] = $key . &quot;: &quot; . $value;
+}
+
+$url = 'https://' . $host_name . '/' . $content_title;
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_HEADER, false);
+curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, &quot;PUT&quot;);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
+curl_exec($ch);
+$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+if($http_code != 200)  {
+	exit('Error : '.$http_code.' Failed to upload');
+}
+else {
+exit('URL : '.$url.' Upload success!');
+}
+ 
+?&gt;
+  </pre><p>Now, let's break down the code and explain how it works:</p>
+  <ol><li><p><strong>Digital Ocean Spaces API Keys</strong>: Replace <code>'YOUR_ACCESS_KEY_ID'</code> and <code>'YOUR_SECRET_ACCESS_KEY'</code> with your DigitalOcean Spaces API access key and secret access key.</p></li>
+  <li><p><strong>Bucket Name</strong>: Set the <code>$bucket_name</code> variable to the name of your DigitalOcean Spaces bucket.</p></li>
+  <li><p><strong>DigitalOcean Region</strong>: Update <code>$dosp_region</code> with the appropriate region for your DigitalOcean Spaces instance.</p></li>
+  <li><p><strong>Content to Upload</strong>: Replace <code>'yourfilepath'</code> with the actual path to the file you want to upload.</p></li>
+  <li><p><strong>Content Permissions</strong>: You can set the <code>$content_acl</code> variable to control the permissions on the uploaded content. <code>'public-read'</code> allows public access.</p>
+  </li>
+  <li><p><strong>MIME Type</strong>: Define the MIME type of your content using the <code>$content_type</code> variable.</p></li>
+  <li><p><strong>Content Title</strong>: Specify the name of the content as it will appear on DigitalOcean Spaces using the <code>$content_title</code> variable.</p></li>
+  <li><p><strong>HTTP Request Headers</strong>: Various headers are set for the HTTP request, including the <code>Content-Type</code>, <code>x-amz-date</code>, and others.</p></li>
+  <li><p><strong>Canonical Request</strong>: The code constructs a canonical request that includes the HTTP method, URI, headers, and payload.</p></li>
+  <li><p><strong>String to Sign</strong>: A string is generated for signing the request.</p></li>
+  <li><p><strong>Signing Key</strong>: The code generates a signing key for authorization.</p></li>
+  <li><p><strong>Signature</strong>: Compute the signature using the signing key and string to sign.</p></li>
+  <li><p><strong>Authorization Header</strong>: Create the <code>Authorization</code> header using the computed signature.</p></li>
+ </ol><p>The rest of the code just makes a CURL request to upload your files. I hope this works for you. If not check for errors in the returned response.</p>
+   <h2>Deleting a file from DigitalOcean Spaces</h2>
+   <p>Well you uploaded your Cat's secret pictures to your DigitalOcean Space and now she is angry. So here is how to take that picture off from Space purr-fectly.</p>
+   <pre>&lt;?php
+$dosp_access_key_id = YOUR_ACCESS_KEY_ID;
+$dosp_secret_access_key = YOUR_SECRET_ACCESS_KEY;
+$bucket_name = YOUR_BUCKET_NAME;
+
+$dosp_region = 'nyc3';
+$host_name = $bucket_name . '.nyc3.digitaloceanspaces.com';
+
+
+$content_acl = 'public-read';
+
+
+$content_title =  YOUR_FILE_URL;
+
+$dosp_service_name = 's3';
+
+$timestamp = gmdate('Ymd\THis\Z');
+$date = gmdate('Ymd');
+
+$request_headers = array();
+$request_headers['x-amz-date'] = $timestamp;
+$request_headers['Host'] = $host_name;
+$request_headers['x-amz-content-sha256'] = hash('sha256', $content);
+ksort($request_headers);
+
+$canonical_headers = [];
+foreach($request_headers as $key =&gt; $value) {
+	$canonical_headers[] = strtolower($key) . &quot;:&quot; . $value;
+}
+$canonical_headers = implode(&quot;\n&quot;, $canonical_headers);
+
+$signed_headers = [];
+foreach($request_headers as $key =&gt; $value) {
+	$signed_headers[] = strtolower($key);
+}
+$signed_headers = implode(&quot;;&quot;, $signed_headers);
+
+$canonical_request = [];
+$canonical_request[] = &quot;DELETE&quot;;
+$canonical_request[] = &quot;/&quot; . $content_title;
+$canonical_request[] = &quot;&quot;;
+$canonical_request[] = $canonical_headers;
+$canonical_request[] = &quot;&quot;;
+$canonical_request[] = $signed_headers;
+$canonical_request[] = hash('sha256', $content);
+$canonical_request = implode(&quot;\n&quot;, $canonical_request);
+$hashed_canonical_request = hash('sha256', $canonical_request);
+
+$scope = [];
+$scope[] = $date;
+$scope[] = $dosp_region;
+$scope[] = $dosp_service_name;
+$scope[] = &quot;aws4_request&quot;;
+
+$string_to_sign = [];
+$string_to_sign[] = &quot;AWS4-HMAC-SHA256&quot;; 
+$string_to_sign[] = $timestamp; 
+$string_to_sign[] = implode('/', $scope);
+$string_to_sign[] = $hashed_canonical_request;
+$string_to_sign = implode(&quot;\n&quot;, $string_to_sign);
+
+$kSecret = 'AWS4' . $dosp_secret_access_key;
+$kDate = hash_hmac('sha256', $date, $kSecret, true);
+$kRegion = hash_hmac('sha256', $dosp_region, $kDate, true);
+$kService = hash_hmac('sha256', $dosp_service_name, $kRegion, true);
+$kSigning = hash_hmac('sha256', 'aws4_request', $kService, true);
+
+$signature = hash_hmac('sha256', $string_to_sign, $kSigning);
+
+$authorization = [
+	'Credential=' . $dosp_access_key_id . '/' . implode('/', $scope),
+	'SignedHeaders=' . $signed_headers,
+	'Signature=' . $signature
+];
+$authorization = 'AWS4-HMAC-SHA256' . ' ' . implode( ',', $authorization);
+
+$curl_headers = [ 'Authorization: ' . $authorization ];
+foreach($request_headers as $key =&gt; $value) {
+	$curl_headers[] = $key . &quot;: &quot; . $value;
+}
+
+$url = 'https://' . $host_name . '/' . $content_title;
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_HEADER, false);
+curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, &quot;DELETE&quot;);
+echo curl_exec($ch);
+print curl_error($ch);
+
+$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+if($http_code != 200) 
+	exit('Error : '.$http_code.' Failed to upload');
+}
+?&gt;</pre>
+   <p>I hope this helps you set up Digialocean Spaces in your PHP project.</p>
+       <p class="meta">Written by <a href="https://github.com/avadhesh18/">Avadhesh</a></p>
+        </article>
+        
+  </main>
+</body>
+</html>
