@@ -1,0 +1,354 @@
+body {
+    margin: 0;
+    font-family:host grotesk;
+        font-family: host grotesk;
+    background: #eae9e5;
+}
+.bodywrap {padding:10px;}
+.header img {
+    max-width: 300px;
+}
+
+.header {
+       background: white;
+    padding: 10px 15px;
+    margin: 30px;
+    max-width: 1200px;
+    margin: 20px auto;
+    border-radius: 30px;
+    box-sizing: border-box;
+        background: transparent;
+}
+.headerwrap{
+     align-items: center;
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+        display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.icon {border-radius:14px;margin-right:8px;}
+
+.hero {
+    overflow: hidden;
+    background: transparent;
+}
+
+.herowrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    padding: 40px;
+    background: black;
+    margin: 20px auto;
+    box-sizing: border-box;
+    border-radius: 22px;
+        align-items: center;
+    justify-content: center;
+    
+}
+
+.hero h1 {
+     max-width: 460px;
+    font-size: 62px;
+    color: white;
+    font-family: instrument serif, sssss;
+    font-weight: 400;
+    line-height: 59px;
+}
+.center {
+    padding: 20px;
+    text-align: center;
+    font-size: 22px;
+}
+
+.logos img {
+    height: 28px;
+    margin: 15px;
+}
+
+
+
+.logos {
+    text-align: center;
+    margin:10px;
+}
+h2 {
+    margin: 0 auto;
+    text-align: center;
+    font-size: 44px;
+    font-family: 'Instrument Serif';
+    padding: 30px;
+}
+
+.appboxinside {
+
+    margin: 0 auto;
+    width: 800px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 30px;
+    box-sizing: border-box;
+    margin: 30px auto;
+    border-radius: 39px;
+}
+.at4k .appboxinside {
+    background: radial-gradient(circle at bottom, #d2dcef, #c7e3d726);
+}
+
+.abi img {
+    width: 150px;
+    border-radius: 30px;
+}
+
+.abl h3 {
+    font-size: 45px;
+    margin: 10px 0px;
+}
+
+.abl p {
+    font-size: 25px;
+}
+
+p.quote {
+    font-family: 'Instrument Serif';
+}
+
+.abi {
+    margin-left: 40px;
+}
+.offchess .appboxinside {
+    background: radial-gradient(circle at bottom, #eae9e5, #88e64a40);
+}
+.rdx .appboxinside {
+    background: radial-gradient(circle at bottom, #eae9e5, #c897ff2e);
+}
+.appbox.avadhesh img {
+width:200px;
+    filter: drop-shadow(4px 0 0px #d0cfcb) 
+          drop-shadow(-4px 0 0px #d0cfcb) 
+          drop-shadow(0 4px 0px #d0cfcb) 
+          drop-shadow(0 -4px 0px #d0cfcb);
+}
+.video video {
+    width: 474px;
+}
+
+.rightside {
+    position: relative;
+}
+
+.overvideo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(45deg, black, transparent);
+    text-align: center;
+}
+
+.number1 {
+    background: #00000021;
+    margin: 30px auto;
+    text-align: center;
+    width: 149px;
+    font-size: 22px;
+    color: white;
+    border-radius: 12px;
+    padding: 17px;
+    backdrop-filter: blur(16px);
+    text-transform: uppercase;
+    border: 1px solid #ffffff2b;
+}
+.links img {
+    height: 37px;
+}
+
+.links a {
+    text-decoration: none;
+    margin-right: 22px;
+}
+
+.links {
+    padding: 10px;
+    display:flex;
+    align-items: center;
+    justify-content: start;
+    transition: 0.5s;
+}
+
+.links a:hover {
+    transform: scale(1.2);
+    transition: 0.5s;
+}
+.nav {
+    align-items: center;
+    display: flex;
+}
+
+.nav a {
+    text-decoration: none;
+    color: black;
+    margin-right: 30px;
+    font-size: 21px;
+    letter-spacing: -1px;
+}
+
+.nav img {
+    height: 20px;
+}
+.appbox.avadhesh .appboxinside {
+    background: radial-gradient(circle at bottom, #ffffff, #ffffff2e);
+}
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  will-change: opacity, transform; /* Optimizes browser performance */
+}
+
+/* Active state: fully visible and in place */
+.fade-in-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.nav a {position:relative;}
+.nav a::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background-color: #ff6d37;
+  transition: width 0.2s ease-in-out, left 0.2s ease-in-out;
+}
+
+.nav a:hover::after {
+  width: 100%;
+  left: 0;
+}
+.kyu .appboxinside {
+    background: radial-gradient(circle at bottom, #eae9e5, #4717eb21);
+        background: radial-gradient(circle at bottom, #5639b754, #eae9e5);
+
+}
+div#menubutton {
+    display: none;
+}
+img.bottomlogo {
+      width: 200px;
+    display: block;
+    margin: 0px 0px 9px;
+    text-align: center;
+    margin: 5px auto;
+}
+
+.footernav {color: #999;padding: 5px 0px 7px;font-size:19px;}
+
+.footer {
+    background: transparent;
+    padding: 15px;
+}
+
+.footernav a {
+    text-decoration: none;
+    color: black;
+}
+.footernav{max-width:1200px; margin:0 auto;text-align:center;}
+.pagewrap {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page {}
+
+.link {
+    border-bottom: 1px dotted #0004;
+    font-size: 22px;
+    padding: 14px 10px;
+}
+
+.link strong {
+    display: block;
+}
+
+.link a {
+    color: black;
+    text-decoration: underline;
+}
+
+.link strong {
+    font-size: 24px;
+}
+
+.page h1 {
+    margin: 10px;
+    font-size: 46px;
+}
+@media screen and (max-width: 768px) {
+div#menubutton {
+    display: block;
+    padding: 6px;
+        margin-top: 10px;
+        transform: scale(1.2);
+}
+.header img {
+    max-width: 180px;
+}
+.nav {
+    position: absolute;
+    right: 0;
+    width: 100%;
+    z-index: 10000;
+    text-align: right;
+    display: block;
+    background: white;
+    padding: 10px;
+    top: 94px;
+    display:none;
+}
+
+.nav a {
+    display: block;
+    padding: 5px;
+}
+.herowrap {
+    flex-direction: column;
+    border-radius: 10px;
+}
+
+.hero h1 {
+    font-size: 44px;
+    max-width: 100%;
+    margin: 10px 0px;
+}
+
+.logos img {
+    height: 22px;
+}
+
+.appboxinside {
+    width: 100%;
+    flex-direction: column-reverse;
+    align-items: start;
+}
+
+.abi img {
+    width: 95px;
+    border-radius: 28px;
+}
+
+.abi {
+    margin-left: 0px;
+}
+
+.abl h3 {
+    font-size: 40px;
+    margin: 8px 0px;
+}
+}

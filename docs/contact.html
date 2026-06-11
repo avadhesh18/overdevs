@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='UTF-8'>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Contact | OverDevs </title>
+<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link href="stylesheet.css" rel="stylesheet">
+<meta name="description" content="Contact overdevs. ">
+<meta name="keywords" content="Overdevs, Avadhesh, at4k, offchess, kyu, launcher,apps, app, studio">
+
+<meta name="author" content="Avadhesh Bhunwaliya">
+<meta name="theme-color" content="#eae9e5">
+    <link rel="icon" href="favicon.png" type="image/png" />
+    <link rel="shortcut icon" href="favicon.png" type="image/png" /> 
+</head>
+<body>
+<div class="bodywrap">
+
+<div class="header ">
+<div class="headerwrap">
+<a href="/">
+<img src="overdevs4.png" width="200"> 
+</a>
+</div>
+</div>
+
+<div class="page fade-in-section"><div class="pagewrap">
+<h1>Contact</h1>
+<div class="link">
+<strong>All the apps have dedicated support pages, Reddit communities and contact options inside the app. Please use them to get a quicker more personalised replies. If you have exhausted all the options you may contact Overdevs at the above email.</strong><br>
+<br>
+<a href="">support@overdevs.com</a>
+<br><br><br><br><br>
+</div>
+
+</div>
+<div class="footer">
+<div class="footernav">
+<img src="overdevs4.png" class="bottomlogo" alt="Overdevs.com">
+<a href="/">Home</a> &bull; <a href="/press">Press</a> &bull; <a href="/contact">Contact</a><br><br>
+&copy; Overdevs.com 2026
+</div></div>
+<script>document.addEventListener("DOMContentLoaded", () => {
+  // 1. Select all targeted sections
+  const sections = document.querySelectorAll('.fade-in-section');
+
+  // 2. Set options for the observer
+  const options = {
+    root: null,         // Uses the viewport as the container
+    rootMargin: "0px",  // Triggers exactly at the viewport boundary
+    threshold: 0.1     // Triggers when 15% of the section is visible
+  };
+
+  // 3. Define the callback function
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      // If the section enters the viewport
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        // Stop observing once the animation triggers (optional)
+        observer.unobserve(entry.target); 
+      }
+    });
+  }, options);
+
+  // 4. Attach the observer to each section
+  sections.forEach(section => {
+    observer.observe(section);
+  });
+});
+
+function toggleme() {
+
+  const target = document.getElementById("navmenu");
+  if (target.style.display === "none") {
+    target.style.display = "block";
+  } else {
+    target.style.display = "none";
+  }
+}
+</script></body></html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='UTF-8'>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>In the News | OverDevs </title>
+<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link href="stylesheet.css" rel="stylesheet">
+<meta name="description" content="Overdevs in the news. ">
+<meta name="keywords" content="Overdevs, Avadhesh, at4k, offchess, kyu, launcher,apps, app, studio">
+
+<meta name="author" content="Avadhesh Bhunwaliya">
+<meta name="theme-color" content="#eae9e5">
+    <link rel="icon" href="favicon.png" type="image/png" />
+    <link rel="shortcut icon" href="favicon.png" type="image/png" /> 
+</head>
+<body>
+<div class="bodywrap">
+
+<div class="header ">
+<div class="headerwrap"><a href="/">
+<img src="overdevs4.png" width="200"> </a>
+
+</div>
+</div>
+
+<div class="page fade-in-section"><div class="pagewrap">
+<h1>In the news</h1>
+<div class="link">
+<strong>WIRED</strong>
+<a href="https://www.wired.com/story/at4k-app-makes-google-tv-actually-usable/">This App Makes Google TV Actually Usable</a>
+</div>
+<div class="link">
+<strong>Lifehacker</strong>
+<a href="https://lifehacker.com/tech/rdx-is-a-clean-reddit-client-for-lurkers?test_uuid=zXnWOLjQQwkYjMVwrvo5w&test_variant=A">RDX Is the Best Reddit Client for Lurkers</a>
+</div>
+<div class="link">
+<strong>iPhone Ticker</strong>
+<a href="https://www.iphone-ticker.de/offchess-bietet-100-000-schachraetsel-ohne-internetverbindung-259793/">OffChess offers 100,000 chess puzzles without an internet connection.
+</a>
+</div>
+<div class="link">
+<strong>PCworld</strong>
+<a href="https://www.pcworld.com/article/3046242/make-your-google-tv-look-like-apple-tv-with-this-free-app.html">Make your Google TV look like Apple TV with this free app
+</a>
+</div>
+
+<div class="link">
+<strong>BGR</strong>
+<a href="https://www.bgr.com/2140758/best-smart-tv-launchers-you-can-try/">"If you are a fan of the clean and minimal aesthetic of the official Apple TV launcher, you'll appreciate the AT4K Launcher."</a>
+</div>
+
+<div class="link">
+<strong>XDA</strong>
+<a href="https://www.xda-developers.com/turned-google-tv-into-apple-tv-free-app/">I turned my Google TV into an Apple TV with this free app</a>
+</div>
+
+<div class="link">
+<strong>MakeUseOf</strong>
+<a href="https://www.makeuseof.com/use-at4k-launcher-google-android-tv/">I should've installed this smart TV launcher years ago
+</a>
+</div>
+
+
+<div class="link">
+<strong>BUG</strong>
+<a href="https://www.bug.hr/appdana/offchess-rjesavanje-zagonetki-u-sahu-dopast-ce-se-i-pocetnicima-i-znalcima-52507">OffChess - offline chess puzzles will appeal to both beginners and experts</a>
+</div>
+
+
+
+</div>
+<div class="footer">
+<div class="footernav">
+<img src="overdevs4.png" class="bottomlogo" alt="Overdevs.com">
+<a href="/">Home</a> &bull; <a href="/press">Press</a> &bull; <a href="/contact">Contact</a><br><br>
+&copy; Overdevs.com 2026
+</div></div>
+
+<style>
+</style>
+<script>document.addEventListener("DOMContentLoaded", () => {
+  // 1. Select all targeted sections
+  const sections = document.querySelectorAll('.fade-in-section');
+
+  // 2. Set options for the observer
+  const options = {
+    root: null,         // Uses the viewport as the container
+    rootMargin: "0px",  // Triggers exactly at the viewport boundary
+    threshold: 0.1     // Triggers when 15% of the section is visible
+  };
+
+  // 3. Define the callback function
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      // If the section enters the viewport
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        // Stop observing once the animation triggers (optional)
+        observer.unobserve(entry.target); 
+      }
+    });
+  }, options);
+
+  // 4. Attach the observer to each section
+  sections.forEach(section => {
+    observer.observe(section);
+  });
+});
+
+function toggleme() {
+
+  const target = document.getElementById("navmenu");
+  if (target.style.display === "none") {
+    target.style.display = "block";
+  } else {
+    target.style.display = "none";
+  }
+}
+</script></body></html>
